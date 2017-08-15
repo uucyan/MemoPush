@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 //import android.widget.ImageView
 import android.widget.TextView
 import com.uucyan.memopush.R
+import com.uucyan.memopush.bindView
 import com.uucyan.memopush.model.Memo
 
 /**
@@ -25,23 +26,21 @@ class MemoView : FrameLayout {
                 attrs: AttributeSet?,
                 defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    constructor(context: Context?,
-                attrs: AttributeSet?,
-                defStyleAttr: Int,
-                defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
+//    constructor(context: Context?,
+//                attrs: AttributeSet?,
+//                defStyleAttr: Int,
+//                defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-    var titleTextView: TextView? = null
+    val titleTextView: TextView by bindView<TextView>(R.id.title_text_view)
 
-    var bodyTextView: TextView? = null
+    val bodyTextView: TextView by bindView<TextView>(R.id.body_text_view)
 
     init {
         LayoutInflater.from(context).inflate(R.layout.view_memo, this)
-        titleTextView = findViewById<TextView>(R.id.title_text_view)
-        bodyTextView = findViewById<TextView>(R.id.body_text_view)
     }
 
     fun setMemo(memo: Memo) {
-        titleTextView?.text = memo.title
-        bodyTextView?.text = memo.body
+        titleTextView.text = memo.title
+        bodyTextView.text = memo.body
     }
 }
