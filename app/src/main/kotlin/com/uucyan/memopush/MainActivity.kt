@@ -3,10 +3,15 @@ package com.uucyan.memopush
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ListView
+import android.content.Intent
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.view.MemoView
 
 class MainActivity : AppCompatActivity() {
+
+    companion object Factory {
+        val EXTRA_MEMO_ID = "com.uucyan.memopush.MainActivity.EXTRA_MEMO_ID"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,15 +21,19 @@ class MainActivity : AppCompatActivity() {
 
         val listAdapter = MemoListAdapter(applicationContext)
         listAdapter.memo = listOf(
-                Memo(id = "1", title = "テストメモ１", body = "これは一つ目のメモです。", notificationTime = "2017-08-27 10:00:00"),
-                Memo(id = "1", title = "テストメモ２", body = "これは二つ目のメモです。", notificationTime = "2017-08-01 10:00:00"))
+                Memo(id = 1, title = "テストメモ１", body = "これは一つ目のメモです。", notificationTime = "2017-08-27 10:00:00"),
+                Memo(id = 2, title = "テストメモ２", body = "これは二つ目のメモです。", notificationTime = "2017-08-01 10:00:00"))
 
         val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
         listView.adapter = listAdapter
         listView.setOnItemClickListener { adapterView, view, position, id ->
             val memo = listAdapter.memo[position]
-            MemoActivity.intent(this, memo).let { startActivity(it) }
+//            MemoActivity.intent(this, memo).let { startActivity(it) }
+            val intent = Intent(this, MemoActivity::class.java)
+            intent.putExtra("EXTRA_MEMO_ID", memo.id)
+            startActivity(intent)
         }
+
 
 //        memoView.setMemo(Memo(id = "1",
 //                title = "テストメモ",

@@ -18,7 +18,10 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MemoActivity" />
+        <activity
+            android:name=".MemoActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="メモの追加・編集"/>
     </application>
 
 </manifest>

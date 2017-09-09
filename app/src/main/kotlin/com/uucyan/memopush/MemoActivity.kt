@@ -12,8 +12,6 @@ import com.uucyan.memopush.view.MemoView
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-
-
 /**
  * Created by Uucyan on 2017/08/27.
  */
@@ -22,20 +20,22 @@ class MemoActivity : AppCompatActivity() {
 //    val notificationTimeView: TextView by bindView<TextView>(R.id.notification_time_view)
 //    private val notificationTimeView: TextView? = null
 
-    companion object {
-
-        private const val MEMO_EXTRA: String = "memo"
-
-        fun intent(context: Context, memo: Memo): Intent =
-                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
-    }
+//    companion object {
+//
+//        private const val MEMO_EXTRA: String = "memo"
+//
+//        fun intent(context: Context, memo: Memo): Intent =
+//                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
+        val memoId = intent.getIntExtra(MainActivity.EXTRA_MEMO_ID, 0)
+
         val memoView = findViewById<MemoView>(R.id.memo_view) as MemoView
-        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
+//        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
 //        memoView.setMemo(memo)
 
         val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
