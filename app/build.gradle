@@ -4,6 +4,10 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: "kotlin-allopen"
+
+apply plugin: "kotlin-noarg"
+
 apply plugin: 'realm-android'
 
 android {
@@ -38,4 +42,12 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
+}
+
+allOpen {
+    annotation('io.realm.annotations.RealmClass')
+}
+
+noArg {
+    annotation('io.realm.annotations.RealmClass')
 }
