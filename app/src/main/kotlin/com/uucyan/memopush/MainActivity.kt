@@ -13,9 +13,9 @@ import io.realm.Realm
 
 class MainActivity : AppCompatActivity() {
 
-    companion object Factory {
-        val EXTRA_MEMO_ID = "com.uucyan.memopush.MainActivity.EXTRA_MEMO_ID"
-    }
+//    companion object Factory {
+//        val EXTRA_MEMO_ID = "com.uucyan.memopush.MainActivity.EXTRA_MEMO_ID"
+//    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
             val memo = listAdapter.memo[position]
 //            MemoActivity.intent(this, memo).let { startActivity(it) }
             val intent = Intent(this, MemoActivity::class.java)
-            intent.putExtra("EXTRA_MEMO_ID", memo.id)
+            intent.putExtra("MEMO_ID", memo.id)
             startActivity(intent)
         }
 

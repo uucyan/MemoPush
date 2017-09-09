@@ -20,10 +20,6 @@ import android.R.id.edit
 import android.text.SpannableStringBuilder
 import android.widget.EditText
 
-
-
-
-
 /**
  * Created by Uucyan on 2017/08/27.
  */
@@ -44,7 +40,23 @@ class MemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-        val memoId = intent.getIntExtra(MainActivity.EXTRA_MEMO_ID, 0)
+        val memoId = intent.getIntExtra("MEMO_ID", 0)
+
+        // idが渡ってきた場合0ではないため、編集画面として既存のデータをセットする
+        if (memoId != 0) {
+            val realm = Realm.getDefaultInstance()
+            val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
+
+            val title = findViewById<EditText>(R.id.title_edit)
+            val body = findViewById<EditText>(R.id.body_edit)
+            val notificationTime = findViewById<TextView>(R.id.notification_time_view)
+
+            title.setText(memo!!.title)
+            body.setText(memo!!.body)
+            notificationTime.setText(memo!!.notificationTime)
+
+        }
+
 
         val memoView = findViewById<MemoView>(R.id.memo_view) as MemoView
 //        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
