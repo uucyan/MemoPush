@@ -11,9 +11,18 @@ import android.widget.CompoundButton
 import android.widget.TextView
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.view.MemoView
+import com.uucyan.memopush.service.RealmService
+import io.realm.Realm
 //import jdk.nashorn.internal.objects.NativeDate.getTime
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import android.R.id.edit
+import android.text.SpannableStringBuilder
+import android.widget.EditText
+
+
+
+
 
 /**
  * Created by Uucyan on 2017/08/27.
@@ -72,8 +81,26 @@ class MemoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.getItemId()
         if (id == R.id.save_memo) {
-            finish()
+            // DBへの登録処理
+            Realm.getDefaultInstance().use { realm ->
+                realm.executeTransaction {
+                    val memo = realm.createObject(Memo::class.java, RealmService.idGeneration())
+
+                    // 入力値を取得
+                    val title = findViewById<EditText>(R.id.title_edit)
+                    val body = findViewById<EditText>(R.id.body_edit)
+                    val notificationTime = findViewById<TextView>(R.id.notification_time_view)
+
+                    // 登録
+//                    memo.id = RealmService.idGeneration()
+                    memo.title = title.getText().toString()
+                    memo.body = body.getText().toString()
+                    memo.notificationTime = notificationTime.getText().toString()
+                }
+            }
         }
+
+        finish()
         return true
     }
 

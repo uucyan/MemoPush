@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.uucyan.memopush.model.Memo
 import android.support.v4.content.ContextCompat
+import io.realm.Realm
 
 
 class MainActivity : AppCompatActivity() {
@@ -23,9 +24,22 @@ class MainActivity : AppCompatActivity() {
 //        val memoView = MemoView(applicationContext)
 
         val listAdapter = MemoListAdapter(applicationContext)
-        listAdapter.memo = listOf(
-                Memo(id = 1, title = "テストメモ１", body = "これは一つ目のメモです。", notificationTime = "2017-08-27 10:00:00"),
-                Memo(id = 2, title = "テストメモ２", body = "これは二つ目のメモです。", notificationTime = "2017-08-01 10:00:00"))
+
+        val realm = Realm.getDefaultInstance()
+        listAdapter.memo = realm.where(Memo::class.java).findAll()
+
+//        Realm.getDefaultInstance().use { realm ->
+//            realm.where(Memo::class.java).findAll().forEach {
+////                var memos = it
+//            }
+//            listAdapter.memo = realm.where(Memo::class.java).findAll()
+//
+//        }
+
+//        val listAdapter = MemoListAdapter(applicationContext)
+//        listAdapter.memo = listOf(
+//                Memo(id = 1, title = "テストメモ１", body = "これは一つ目のメモです。", notificationTime = "2017-08-27 10:00:00"),
+//                Memo(id = 2, title = "テストメモ２", body = "これは二つ目のメモです。", notificationTime = "2017-08-01 10:00:00"))
 
         val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
         listView.adapter = listAdapter
