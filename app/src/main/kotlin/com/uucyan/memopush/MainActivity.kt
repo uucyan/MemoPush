@@ -7,7 +7,8 @@ import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
 import com.uucyan.memopush.model.Memo
-import com.uucyan.memopush.view.MemoView
+import android.support.v4.content.ContextCompat
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -49,7 +50,12 @@ class MainActivity : AppCompatActivity() {
      * アクションバーにボタン追加
      */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_buttons, menu)
+        menuInflater.inflate(R.menu.main_menu_buttons, menu)
+
+        // メモ追加ボタンの色着色
+        val addMemoButton = getDrawable(R.drawable.ic_action_add_memo)
+        addMemoButton!!.setTint(ContextCompat.getColor(this, R.color.colorIcon))
+
         return true
     }
 
