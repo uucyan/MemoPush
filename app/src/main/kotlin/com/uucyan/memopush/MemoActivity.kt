@@ -3,7 +3,10 @@ package com.uucyan.memopush
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.CompoundButton
 import android.widget.TextView
 import com.uucyan.memopush.model.Memo
@@ -48,6 +51,30 @@ class MemoActivity : AppCompatActivity() {
                 notificationTimeView.setText("")
             }
         }
+    }
+
+    /**
+     * アクションバーにボタン追加
+     */
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.memo_menu_buttons, menu)
+
+        // メモ追加ボタンの色着色
+//        val addMemoButton = getDrawable(R.drawable.ic_action_add_memo)
+//        addMemoButton!!.setTint(ContextCompat.getColor(this, R.color.colorIcon))
+
+        return true
+    }
+
+    /**
+     * アクションバーのボタンを押下した時の処理
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
+        if (id == R.id.save_memo) {
+            finish()
+        }
+        return true
     }
 
     /**
