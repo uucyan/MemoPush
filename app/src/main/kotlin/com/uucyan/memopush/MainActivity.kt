@@ -4,6 +4,8 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ListView
 import android.content.Intent
+import android.view.Menu
+import android.view.MenuItem
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.view.MemoView
 
@@ -41,5 +43,25 @@ class MainActivity : AppCompatActivity() {
 //                notificationTime = "2017-08-01 10:00:00"))
 //
 //        setContentView(memoView)
+    }
+
+    /**
+     * アクションバーにボタン追加
+     */
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_buttons, menu)
+        return true
+    }
+
+    /**
+     * アクションバーのボタンを押下した時の処理
+     */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.getItemId()
+        if (id == R.id.add_memo) {
+            val intent = Intent(this, MemoActivity::class.java)
+            startActivity(intent)
+        }
+        return true
     }
 }
