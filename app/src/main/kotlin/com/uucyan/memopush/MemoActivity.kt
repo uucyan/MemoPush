@@ -19,7 +19,8 @@ import java.util.Calendar;
 import android.R.id.edit
 import android.text.SpannableStringBuilder
 import android.widget.EditText
-
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
 
 
 /**
@@ -97,13 +98,26 @@ class MemoActivity : AppCompatActivity() {
                 } else {
                     this.updateMemo()
                 }
+                finish()
             }
             R.id.delete_memo -> {
-                this.deleteMemo()
+                val alertDlg = AlertDialog.Builder(this)
+                alertDlg.setTitle("メモの削除")
+                alertDlg.setMessage("本当に削除しますか？")
+                alertDlg.setPositiveButton(
+                        "OK",
+                        DialogInterface.OnClickListener { dialog, which ->
+                            this.deleteMemo()
+                            finish()
+                        })
+                alertDlg.setNegativeButton(
+                        "Cancel",
+                        DialogInterface.OnClickListener { dialog, which ->
+                        })
+                alertDlg.create().show()
             }
         }
 
-        finish()
         return true
     }
 
