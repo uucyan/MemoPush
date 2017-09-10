@@ -20,6 +20,8 @@ import android.R.id.edit
 import android.text.SpannableStringBuilder
 import android.widget.EditText
 
+
+
 /**
  * Created by Uucyan on 2017/08/27.
  */
@@ -73,9 +75,13 @@ class MemoActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.memo_menu_buttons, menu)
 
-        // メモ追加ボタンの色着色
-//        val addMemoButton = getDrawable(R.drawable.ic_action_add_memo)
-//        addMemoButton!!.setTint(ContextCompat.getColor(this, R.color.colorIcon))
+        for (i in 0..menu.size() - 1) {
+            val item = menu.getItem(i)
+            if (item.itemId == R.id.delete_memo) {
+                // 編集画面の時だけ削除ボタンを表示する
+                item.isVisible = this.memoId != 0
+            }
+        }
 
         return true
     }
