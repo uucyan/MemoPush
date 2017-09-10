@@ -36,27 +36,20 @@ class MemoActivity : AppCompatActivity() {
 //                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
 //    }
 
+    // custom getterで保存・編集対象のIDを定義
+    // 新規登録の場合 0 が入る
+    private val memoId: Int
+        get() = intent.getIntExtra("MEMO_ID", 0)
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-        val memoId = intent.getIntExtra("MEMO_ID", 0)
-
         // idが渡ってきた場合0ではないため、編集画面として既存のデータをセットする
-        if (memoId != 0) {
-            val realm = Realm.getDefaultInstance()
-            val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
-
-            val title = findViewById<EditText>(R.id.title_edit)
-            val body = findViewById<EditText>(R.id.body_edit)
-            val notificationTime = findViewById<TextView>(R.id.notification_time_view)
-
-            title.setText(memo!!.title)
-            body.setText(memo!!.body)
-            notificationTime.setText(memo!!.notificationTime)
-
+        if (this.memoId != 0) {
+            this.setFieldData()
         }
-
 
         val memoView = findViewById<MemoView>(R.id.memo_view) as MemoView
 //        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
@@ -125,5 +118,21 @@ class MemoActivity : AppCompatActivity() {
         cal.set(year, month, dayOfMonth)
         val sdf = SimpleDateFormat("yyyy/MM/dd")
         notificationTimeView.setText(sdf.format(cal.getTime()))
+    }
+
+    /**
+     * 既存のメモデータをフィールドにセットする
+     */
+    private fun setFieldData() {
+        val realm = Realm.getDefaultInstance()
+        val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+
+        val title = findViewById<EditText>(R.id.title_edit)
+        val body = findViewById<EditText>(R.id.body_edit)
+        val notificationTime = findViewById<TextView>(R.id.notification_time_view)
+
+        title.setText(memo!!.title)
+        body.setText(memo.body)
+        notificationTime.setText(memo.notificationTime)
     }
 }
