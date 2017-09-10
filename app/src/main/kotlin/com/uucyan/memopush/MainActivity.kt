@@ -84,4 +84,24 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
+    // 他の画面から戻った時、メモ一覧を再取得・再定義
+    override fun onRestart() {
+        super.onRestart()
+
+        val listAdapter = MemoListAdapter(applicationContext)
+
+        val realm = Realm.getDefaultInstance()
+        listAdapter.memo = realm.where(Memo::class.java).findAll()
+
+        val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
+        listView.adapter = listAdapter
+        listView.setOnItemClickListener { adapterView, view, position, id ->
+            val memo = listAdapter.memo[position]
+//            MemoActivity.intent(this, memo).let { startActivity(it) }
+            val intent = Intent(this, MemoActivity::class.java)
+            intent.putExtra("MEMO_ID", memo.id)
+            startActivity(intent)
+        }
+    }
 }

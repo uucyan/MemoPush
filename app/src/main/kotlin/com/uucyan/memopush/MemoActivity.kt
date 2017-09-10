@@ -84,12 +84,16 @@ class MemoActivity : AppCompatActivity() {
      * アクションバーのボタンを押下した時の処理
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val itemId = item.getItemId()
-        if (itemId == R.id.save_memo) {
-            if (this.memoId == 0) {
-                this.createMemo()
-            } else {
-                this.updateMemo()
+        when (item.getItemId()) {
+            R.id.save_memo -> {
+                if (this.memoId == 0) {
+                    this.createMemo()
+                } else {
+                    this.updateMemo()
+                }
+            }
+            R.id.delete_memo -> {
+                this.deleteMemo()
             }
         }
 
@@ -164,6 +168,18 @@ class MemoActivity : AppCompatActivity() {
                 memo?.title = title.getText().toString()
                 memo?.body = body.getText().toString()
                 memo?.notificationTime = notificationTime.getText().toString()
+            }
+        }
+    }
+
+    /**
+     * メモの削除
+     */
+    private fun deleteMemo() {
+        Realm.getDefaultInstance().use { realm ->
+            realm.executeTransaction {
+                val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+                memo?.deleteFromRealm()
             }
         }
     }

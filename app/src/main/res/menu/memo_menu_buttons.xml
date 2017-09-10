@@ -9,4 +9,11 @@
         android:title="AddMemo">
     </item>
 
+    <item
+        android:id="@+id/delete_memo"
+        android:titleCondensed="削除"
+        app:showAsAction="ifRoom"
+        android:title="DeleteMemo">
+    </item>
+
 </menu>
