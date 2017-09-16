@@ -6,9 +6,9 @@ import android.widget.ListView
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
-import com.uucyan.memopush.model.Memo
 import android.support.v4.content.ContextCompat
 import io.realm.Realm
+import com.uucyan.memopush.model.Memo
 
 
 class MainActivity : AppCompatActivity() {

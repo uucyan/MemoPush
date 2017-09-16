@@ -1,22 +1,12 @@
 package com.uucyan.memopush
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
 import android.widget.TextView
-import com.uucyan.memopush.model.Memo
-import com.uucyan.memopush.view.MemoView
-import com.uucyan.memopush.service.RealmService
-import io.realm.Realm
-//import jdk.nashorn.internal.objects.NativeDate.getTime
-import java.text.SimpleDateFormat;
-import android.R.id.edit
-import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.content.DialogInterface
 import android.support.v4.app.NotificationCompat
@@ -24,12 +14,14 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Button
 import android.support.v4.app.NotificationManagerCompat
-import me.mattak.moment.Moment
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
-import android.provider.CalendarContract
-import com.uucyan.memopush.bindView
 import java.util.*
+import java.text.SimpleDateFormat;
+import io.realm.Realm
+import me.mattak.moment.Moment
+import com.uucyan.memopush.model.Memo
+import com.uucyan.memopush.service.RealmService
 
 
 /**
