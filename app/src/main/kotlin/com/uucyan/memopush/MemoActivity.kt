@@ -135,7 +135,7 @@ class MemoActivity : AppCompatActivity() {
      */
     private fun setFieldData() {
         val realm = Realm.getDefaultInstance()
-        val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+        val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
 
         val title = findViewById<EditText>(R.id.title_edit)
         val body = findViewById<EditText>(R.id.body_edit)
@@ -175,7 +175,7 @@ class MemoActivity : AppCompatActivity() {
     private fun updateMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
 
                 // 入力値を取得
                 val title = findViewById<EditText>(R.id.title_edit)
@@ -196,7 +196,7 @@ class MemoActivity : AppCompatActivity() {
     private fun deleteMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
                 memo?.deleteFromRealm()
             }
         }
@@ -222,14 +222,14 @@ class MemoActivity : AppCompatActivity() {
 
         val resultIntent = Intent(this, MemoActivity::class.java)
         // 通知したメモのタップ時にメモの情報を取得するため、IDをセットしておく
-        resultIntent.putExtra("MEMO_ID", this.memoId)
+        resultIntent.putExtra("MEMO_ID", memoId)
 
         // 通議から起動したメモの編集画面から戻るボタンを押した時、
         // AndroidManifestに定義した親クラスに遷移させるための設定処理。
         val stackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addParentStack(MemoActivity::class.java)
         stackBuilder.addNextIntent(resultIntent)
-        val resultPendingIntent = stackBuilder.getPendingIntent(this.memoId, PendingIntent.FLAG_UPDATE_CURRENT)
+        val resultPendingIntent = stackBuilder.getPendingIntent(memoId, PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(resultPendingIntent);
 
 //        builder.addAction(R.drawable.ic_action_add_memo, "アクション1", resultPendingIntent);
@@ -244,11 +244,11 @@ class MemoActivity : AppCompatActivity() {
 //        bigTextStyle.setSummaryText("SummaryText")
 
         val manager = NotificationManagerCompat.from(applicationContext)
-        manager.notify(this.memoId, builder.build())
+        manager.notify(memoId, builder.build())
     }
 
     /**
      * 新規作成かどうか判定
      */
-    private fun isCreate(): Boolean = this.memoId == 0
+    private fun isCreate(): Boolean = memoId == 0
 }
