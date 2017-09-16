@@ -45,27 +45,13 @@ class MemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-        // idが渡ってきた場合0ではないため、編集画面として既存のデータをセットする
+        // 編集画面の場合、登録してあるデータを入力欄にセットする
         if (!isCreate()) {
-            this.setFieldData()
+            setFieldData()
         }
 
-        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                val datePicker = DatePickerDialogFragment()
-                datePicker.show(supportFragmentManager, "datePicker")
-            } else {
-                val notificationTimeView = findViewById<TextView>(R.id.notification_time_view)
-                notificationTimeView.setText("")
-            }
-        }
-
-        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                onNotificationMemo()
-            }
-        })
+        setButton()
+        setCompoundButton()
     }
 
     /**
@@ -92,9 +78,9 @@ class MemoActivity : AppCompatActivity() {
         when (item.getItemId()) {
             R.id.save_memo -> {
                 if (isCreate()) {
-                    this.createMemo()
+                    createMemo()
                 } else {
-                    this.updateMemo()
+                    updateMemo()
                 }
                 finish()
             }
@@ -105,7 +91,7 @@ class MemoActivity : AppCompatActivity() {
                 alertDlg.setPositiveButton(
                         "OK",
                         DialogInterface.OnClickListener { dialog, which ->
-                            this.deleteMemo()
+                            deleteMemo()
                             finish()
                         })
                 alertDlg.setNegativeButton(
@@ -251,4 +237,31 @@ class MemoActivity : AppCompatActivity() {
      * 新規作成かどうか判定
      */
     private fun isCreate(): Boolean = memoId == 0
+
+    /**
+     * ボタンの設定
+     */
+    private fun setButton(): Unit {
+        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                onNotificationMemo()
+            }
+        })
+    }
+
+    /**
+     * スイッチボタンの設定
+     */
+    private fun setCompoundButton(): Unit {
+        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
+        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                val datePicker = DatePickerDialogFragment()
+                datePicker.show(supportFragmentManager, "datePicker")
+            } else {
+                val notificationTimeView = findViewById<TextView>(R.id.notification_time_view)
+                notificationTimeView.setText("")
+            }
+        }
+    }
 }
