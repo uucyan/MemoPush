@@ -17,7 +17,6 @@ import android.support.v4.app.NotificationManagerCompat
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import java.util.*
-import java.text.SimpleDateFormat;
 import io.realm.Realm
 import me.mattak.moment.Moment
 import com.uucyan.memopush.model.Memo
@@ -201,7 +200,7 @@ class MemoActivity : AppCompatActivity() {
     /**
      * ボタンの設定
      */
-    private fun setButton(): Unit {
+    private fun setButton() {
         findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
                 onNotificationMemo()
@@ -212,7 +211,7 @@ class MemoActivity : AppCompatActivity() {
     /**
      * スイッチボタンの設定
      */
-    private fun setCompoundButton(): Unit {
+    private fun setCompoundButton() {
         val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
 
         // 日付が登録されていればチェックをつける
