@@ -20,7 +20,14 @@ import android.R.id.edit
 import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.content.DialogInterface
+import android.support.v4.app.NotificationCompat
 import android.support.v7.app.AlertDialog
+import android.view.View
+import android.widget.Button
+import android.support.v4.app.NotificationManagerCompat
+import me.mattak.moment.Moment
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 
 
 /**
@@ -39,8 +46,9 @@ class MemoActivity : AppCompatActivity() {
 //                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
 //    }
 
-    // custom getterで保存・編集対象のIDを定義
-    // 新規登録の場合 0 が入る
+    // custom getter
+    // リストからメモの選択またはメモを通知した際に対象メモのIDがセットされる
+    // 新規登録の場合は0がセットされる
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
 
@@ -68,6 +76,15 @@ class MemoActivity : AppCompatActivity() {
                 notificationTimeView.setText("")
             }
         }
+
+//        val button = findViewById<Button>(R.id.notification_button) as Button
+//        button
+
+        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                onNotificationMemo()
+            }
+        })
     }
 
     /**
@@ -202,5 +219,51 @@ class MemoActivity : AppCompatActivity() {
                 memo?.deleteFromRealm()
             }
         }
+    }
+
+    /**
+     * メモの通知
+     * TODO: 通知関連の処理はServiceにする
+     */
+    private fun onNotificationMemo() {
+        // 入力値を取得
+        val title = findViewById<EditText>(R.id.title_edit)
+        val body = findViewById<EditText>(R.id.body_edit)
+//        val notificationTime = findViewById<TextView>(R.id.notification_time_view)
+
+        val builder = NotificationCompat.Builder(applicationContext)
+        builder.setSmallIcon(R.drawable.ic_action_add_memo)
+        builder.setContentTitle(title.getText().toString())
+        builder.setContentText(body.getText().toString())
+//        builder.setSubText("SubText")
+//        builder.setContentInfo("Info")
+        builder.setWhen(System.currentTimeMillis())
+
+
+        val resultIntent = Intent(this, MemoActivity::class.java)
+        // 通知したメモのタップ時にメモの情報を取得するため、IDをセットしておく
+        resultIntent.putExtra("MEMO_ID", this.memoId)
+
+        // 通議から起動したメモの編集画面から戻るボタンを押した時、
+        // AndroidManifestに定義した親クラスに遷移させるための設定処理。
+        val stackBuilder = TaskStackBuilder.create(this)
+        stackBuilder.addParentStack(MemoActivity::class.java)
+        stackBuilder.addNextIntent(resultIntent)
+        val resultPendingIntent = stackBuilder.getPendingIntent(this.memoId, PendingIntent.FLAG_UPDATE_CURRENT)
+        builder.setContentIntent(resultPendingIntent);
+
+//        builder.addAction(R.drawable.ic_action_add_memo, "アクション1", resultPendingIntent);
+
+//        builder.setTicker("Ticker") // 通知到着時に通知バーに表示(4.4まで)
+        // 5.0からは表示されない
+
+        // 最近のAndroidバージョンだと必要なさそう…。
+        val bigTextStyle = NotificationCompat.BigTextStyle(builder)
+        bigTextStyle.bigText(body.getText().toString())
+        bigTextStyle.setBigContentTitle(title.getText().toString())
+//        bigTextStyle.setSummaryText("SummaryText")
+
+        val manager = NotificationManagerCompat.from(applicationContext)
+        manager.notify(this.memoId, builder.build())
     }
 }

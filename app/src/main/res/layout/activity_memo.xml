@@ -53,26 +53,33 @@
             android:lines="10"
             android:inputType="textMultiLine" />
 
-        <TextView
-            android:id="@+id/notification_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginTop="335dp"
-            android:text="通知バーに表示"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
+        <!--<TextView-->
+            <!--android:id="@+id/notification_text_view"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginStart="1dp"-->
+            <!--android:ellipsize="end"-->
+            <!--android:maxLines="1"-->
+            <!--android:layout_marginTop="335dp"-->
+            <!--android:text="通知バーに表示"-->
+            <!--android:textColor="@android:color/black"-->
+            <!--android:textSize="17sp" />-->
 
-        <Switch
-            android:id="@+id/notification_switch"
+        <!--<Switch-->
+            <!--android:id="@+id/notification_switch"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="335dp"-->
+            <!--android:layout_marginLeft="135dp"-->
+            <!--android:textSize="17sp"-->
+            <!--android:text="" />-->
+
+        <Button
+            android:id="@+id/notification_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="335dp"
-            android:layout_marginLeft="135dp"
-            android:textSize="17sp"
-            android:text="" />
+            android:layout_marginTop="325dp"
+            android:text="通知バーに表示" />
 
         <TextView
             android:id="@+id/notification_time_text_view"
