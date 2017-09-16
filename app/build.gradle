@@ -4,6 +4,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: "kotlin-allopen"
+
+apply plugin: "kotlin-noarg"
+
+apply plugin: 'realm-android'
+
 android {
     compileSdkVersion 26
     buildToolsVersion "26.0.0"
@@ -21,14 +27,28 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.0.0'
+    implementation 'com.android.support:appcompat-v7:26.0.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.0'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.0'
+    compile 'me.mattak:moment:0.0.4'
+}
+
+allOpen {
+    annotation('io.realm.annotations.RealmClass')
+}
+
+noArg {
+    annotation('io.realm.annotations.RealmClass')
 }
