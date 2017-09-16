@@ -111,8 +111,7 @@ class MemoActivity : AppCompatActivity() {
      * 既存のメモデータをフィールドにセットする
      */
     private fun setFieldData() {
-        val realm = Realm.getDefaultInstance()
-        val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
+        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
         titleEditText.setText(memo?.title)
         bodyEditText.setText(memo?.body)

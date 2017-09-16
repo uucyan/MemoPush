@@ -53,9 +53,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setMemoListView(): Unit {
         val listAdapter = MemoListAdapter(applicationContext)
-        val realm = Realm.getDefaultInstance()
 
-        listAdapter.memos = realm.where(Memo::class.java).findAll()
+        listAdapter.memos = Realm.getDefaultInstance().where(Memo::class.java).findAll()
 
         val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
         listView.adapter = listAdapter
