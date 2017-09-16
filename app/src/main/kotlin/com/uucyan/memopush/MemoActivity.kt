@@ -37,9 +37,7 @@ import java.util.*
  */
 class MemoActivity : AppCompatActivity() {
 
-    // custom getter
-    // リストからメモの選択またはメモを通知した際に対象メモのIDがセットされる
-    // 新規登録の場合は0がセットされる
+    // MemoActivity実行時に渡ってきたメモIDを返却する
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
 
@@ -57,9 +55,7 @@ class MemoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_memo)
 
         // 編集画面の場合、登録してあるデータを入力欄にセットする
-        if (!isCreate()) {
-            setFieldData()
-        }
+        if (!isCreate()) setFieldData()
 
         setButton()
         setCompoundButton()
@@ -73,10 +69,8 @@ class MemoActivity : AppCompatActivity() {
 
         for (i in 0..menu.size() - 1) {
             val item = menu.getItem(i)
-            if (item.itemId == R.id.delete_memo) {
-                // 編集画面の時だけ削除ボタンを表示する
-                item.isVisible = !isCreate()
-            }
+            // 編集画面の時だけ削除ボタンを表示する
+            if (item.itemId == R.id.delete_memo) item.isVisible = !isCreate()
         }
 
         return true
@@ -88,11 +82,7 @@ class MemoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.save_memo -> {
-                if (isCreate()) {
-                    createMemo()
-                } else {
-                    updateMemo()
-                }
+                if (isCreate()) createMemo() else updateMemo()
                 finish()
             }
             R.id.delete_memo -> {
@@ -140,7 +130,6 @@ class MemoActivity : AppCompatActivity() {
 
     /**
      * メモの新規登録
-     * TODO: 色々とイけてないからちゃんと考えたい
      */
     private fun createMemo() {
         Realm.getDefaultInstance().use { realm ->
@@ -157,7 +146,6 @@ class MemoActivity : AppCompatActivity() {
 
     /**
      * メモの更新
-     * TODO: 色々とイけてないからちゃんと考えたい
      */
     private fun updateMemo() {
         Realm.getDefaultInstance().use { realm ->
@@ -186,7 +174,7 @@ class MemoActivity : AppCompatActivity() {
 
     /**
      * メモの通知
-     * TODO: 通知関連の処理はServiceにする
+     * TODO: どうにかしたい
      */
     private fun onNotificationMemo() {
         val builder = NotificationCompat.Builder(applicationContext)
@@ -236,10 +224,13 @@ class MemoActivity : AppCompatActivity() {
      */
     private fun setCompoundButton(): Unit {
         val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
+
+        // 日付が登録されていればチェックをつける
+        if (!notificationTimeTextView.getText().toString().isBlank()) toggle.setChecked(true)
+
         toggle.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
-                val datePicker = DatePickerDialogFragment()
-                datePicker.show(supportFragmentManager, "datePicker")
+                DatePickerDialogFragment().show(supportFragmentManager, "datePicker")
             } else {
                 notificationTimeTextView.setText("")
             }

@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         setMemoListView()
     }
 
@@ -25,7 +24,6 @@ class MainActivity : AppCompatActivity() {
      */
     override fun onRestart() {
         super.onRestart()
-
         setMemoListView()
     }
 
@@ -37,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         // メモ追加ボタンの着色
         val addMemoButton = getDrawable(R.drawable.ic_action_add_memo)
-        addMemoButton!!.setTint(ContextCompat.getColor(this, R.color.colorIcon))
+        addMemoButton.setTint(ContextCompat.getColor(this, R.color.colorIcon))
 
         return true
     }
@@ -46,11 +44,7 @@ class MainActivity : AppCompatActivity() {
      * アクションバーのボタンを押下した時の処理
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.getItemId()
-        if (id == R.id.add_memo) {
-            val intent = Intent(this, MemoActivity::class.java)
-            startActivity(intent)
-        }
+        if (item.getItemId() == R.id.add_memo) startActivity(Intent(this, MemoActivity::class.java))
         return true
     }
 
