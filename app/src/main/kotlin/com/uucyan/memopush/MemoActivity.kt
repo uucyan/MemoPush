@@ -35,23 +35,11 @@ import android.app.TaskStackBuilder
  */
 class MemoActivity : AppCompatActivity() {
 
-//    val notificationTimeView: TextView by bindView<TextView>(R.id.notification_time_view)
-//    private val notificationTimeView: TextView? = null
-
-//    companion object {
-//
-//        private const val MEMO_EXTRA: String = "memo"
-//
-//        fun intent(context: Context, memo: Memo): Intent =
-//                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
-//    }
-
     // custom getter
     // リストからメモの選択またはメモを通知した際に対象メモのIDがセットされる
     // 新規登録の場合は0がセットされる
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,10 +49,6 @@ class MemoActivity : AppCompatActivity() {
         if (this.memoId != 0) {
             this.setFieldData()
         }
-
-        val memoView = findViewById<MemoView>(R.id.memo_view) as MemoView
-//        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
-//        memoView.setMemo(memo)
 
         val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
         toggle.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -76,9 +60,6 @@ class MemoActivity : AppCompatActivity() {
                 notificationTimeView.setText("")
             }
         }
-
-//        val button = findViewById<Button>(R.id.notification_button) as Button
-//        button
 
         findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View) {
@@ -238,7 +219,6 @@ class MemoActivity : AppCompatActivity() {
 //        builder.setSubText("SubText")
 //        builder.setContentInfo("Info")
         builder.setWhen(System.currentTimeMillis())
-
 
         val resultIntent = Intent(this, MemoActivity::class.java)
         // 通知したメモのタップ時にメモの情報を取得するため、IDをセットしておく
