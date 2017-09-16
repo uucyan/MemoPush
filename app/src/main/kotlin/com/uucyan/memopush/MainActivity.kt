@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu_buttons, menu)
 
-        // メモ追加ボタンの色着色
+        // メモ追加ボタンの着色
         val addMemoButton = getDrawable(R.drawable.ic_action_add_memo)
         addMemoButton!!.setTint(ContextCompat.getColor(this, R.color.colorIcon))
 

@@ -46,7 +46,7 @@ class MemoActivity : AppCompatActivity() {
         setContentView(R.layout.activity_memo)
 
         // idが渡ってきた場合0ではないため、編集画面として既存のデータをセットする
-        if (this.memoId != 0) {
+        if (!isCreate()) {
             this.setFieldData()
         }
 
@@ -78,7 +78,7 @@ class MemoActivity : AppCompatActivity() {
             val item = menu.getItem(i)
             if (item.itemId == R.id.delete_memo) {
                 // 編集画面の時だけ削除ボタンを表示する
-                item.isVisible = this.memoId != 0
+                item.isVisible = !isCreate()
             }
         }
 
@@ -91,7 +91,7 @@ class MemoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.save_memo -> {
-                if (this.memoId == 0) {
+                if (isCreate()) {
                     this.createMemo()
                 } else {
                     this.updateMemo()
@@ -246,4 +246,9 @@ class MemoActivity : AppCompatActivity() {
         val manager = NotificationManagerCompat.from(applicationContext)
         manager.notify(this.memoId, builder.build())
     }
+
+    /**
+     * 新規作成かどうか判定
+     */
+    private fun isCreate(): Boolean = this.memoId == 0
 }
