@@ -102,10 +102,9 @@ class MemoActivity : AppCompatActivity() {
      * カレンダーで選択した年月日のセット
      */
     fun setDate(year: Int, month: Int, dayOfMonth: Int) {
-        val cal = Calendar.getInstance()
-        cal.set(year, month, dayOfMonth)
-        val sdf = SimpleDateFormat("yyyy/MM/dd")
-        notificationTimeTextView.setText(sdf.format(cal.getTime()))
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, dayOfMonth)
+        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
     }
 
     /**

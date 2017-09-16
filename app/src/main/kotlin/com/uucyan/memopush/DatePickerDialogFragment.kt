@@ -26,7 +26,7 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
         //日付が選択されたときの処理
         val activity = activity
         if (activity is MemoActivity) {
-            (activity as MemoActivity).setDate(year, month, day)
+            activity.setDate(year, month, day)
         }
     }
 
