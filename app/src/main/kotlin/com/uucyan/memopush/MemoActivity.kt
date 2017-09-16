@@ -196,14 +196,11 @@ class MemoActivity : AppCompatActivity() {
         // 入力値を取得
         val title = findViewById<EditText>(R.id.title_edit)
         val body = findViewById<EditText>(R.id.body_edit)
-//        val notificationTime = findViewById<TextView>(R.id.notification_time_view)
 
         val builder = NotificationCompat.Builder(applicationContext)
         builder.setSmallIcon(R.drawable.ic_action_add_memo)
         builder.setContentTitle(title.getText().toString())
         builder.setContentText(body.getText().toString())
-//        builder.setSubText("SubText")
-//        builder.setContentInfo("Info")
         builder.setWhen(System.currentTimeMillis())
 
         val resultIntent = Intent(this, MemoActivity::class.java)
@@ -218,16 +215,9 @@ class MemoActivity : AppCompatActivity() {
         val resultPendingIntent = stackBuilder.getPendingIntent(memoId, PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(resultPendingIntent);
 
-//        builder.addAction(R.drawable.ic_action_add_memo, "アクション1", resultPendingIntent);
-
-//        builder.setTicker("Ticker") // 通知到着時に通知バーに表示(4.4まで)
-        // 5.0からは表示されない
-
         // 最近のAndroidバージョンだと必要なさそう…。
         val bigTextStyle = NotificationCompat.BigTextStyle(builder)
         bigTextStyle.bigText(body.getText().toString())
-        bigTextStyle.setBigContentTitle(title.getText().toString())
-//        bigTextStyle.setSummaryText("SummaryText")
 
         val manager = NotificationManagerCompat.from(applicationContext)
         manager.notify(memoId, builder.build())

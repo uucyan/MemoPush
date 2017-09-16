@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * メモ一覧のセット
      */
-    private fun setMemoListView() {
+    private fun setMemoListView(): Unit {
         val listAdapter = MemoListAdapter(applicationContext)
         val realm = Realm.getDefaultInstance()
 

@@ -8,7 +8,7 @@ import kotlin.jvm.javaClass
  * Created by Uucyan on 2017/09/10.
  */
 class RealmService {
-    companion object{
+    companion object {
         // staticメソッドっぽいidの生成処理
         // Realmではオートインクリメントができない && Kotlinで静的に定義できないため
         fun idGeneration(): Int {
