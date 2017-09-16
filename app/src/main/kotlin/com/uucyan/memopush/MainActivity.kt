@@ -17,20 +17,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val listAdapter = MemoListAdapter(applicationContext)
-        val realm = Realm.getDefaultInstance()
+        setMemoListView()
+    }
 
-        listAdapter.memos = realm.where(Memo::class.java).findAll()
+    /**
+     * 他の画面から戻った時、メモ一覧を再取得
+     */
+    override fun onRestart() {
+        super.onRestart()
 
-        val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
-        listView.adapter = listAdapter
-        listView.setOnItemClickListener { adapterView, view, position, id ->
-            val memo = listAdapter.memos[position]
-            val intent = Intent(this, MemoActivity::class.java)
-
-            intent.putExtra("MEMO_ID", memo.id)
-            startActivity(intent)
-        }
+        setMemoListView()
     }
 
     /**
@@ -58,13 +54,13 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    // 他の画面から戻った時、メモ一覧を再取得・再定義
-    override fun onRestart() {
-        super.onRestart()
-
+    /**
+     * メモ一覧のセット
+     */
+    private fun setMemoListView() {
         val listAdapter = MemoListAdapter(applicationContext)
-
         val realm = Realm.getDefaultInstance()
+
         listAdapter.memos = realm.where(Memo::class.java).findAll()
 
         val listView: ListView = findViewById<ListView>(R.id.list_view) as ListView
@@ -72,6 +68,7 @@ class MainActivity : AppCompatActivity() {
         listView.setOnItemClickListener { adapterView, view, position, id ->
             val memo = listAdapter.memos[position]
             val intent = Intent(this, MemoActivity::class.java)
+
             intent.putExtra("MEMO_ID", memo.id)
             startActivity(intent)
         }
