@@ -13,11 +13,11 @@ import java.text.FieldPosition
  */
 class MemoListAdapter(private val context: Context) : BaseAdapter() {
 
-    var memo: List<Memo> = emptyList()
+    var memos: List<Memo> = emptyList()
 
-    override fun getCount(): Int = memo.size
+    override fun getCount(): Int = memos.size
 
-    override fun getItem(position: Int): Any? = memo[position]
+    override fun getItem(position: Int): Any? = memos[position]
 
     override fun getItemId(position: Int): Long = 0
 
@@ -25,7 +25,7 @@ class MemoListAdapter(private val context: Context) : BaseAdapter() {
                          convertView: View?,
                          parent: ViewGroup?): View =
             ((convertView as? MemoView) ?: MemoView(context)).apply {
-                setMemo(memo[position])
+                setMemo(memos[position])
             }
 
 }

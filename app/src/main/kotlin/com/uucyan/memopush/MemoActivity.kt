@@ -1,23 +1,12 @@
 package com.uucyan.memopush
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
 import android.widget.TextView
-import com.uucyan.memopush.model.Memo
-import com.uucyan.memopush.view.MemoView
-import com.uucyan.memopush.service.RealmService
-import io.realm.Realm
-//import jdk.nashorn.internal.objects.NativeDate.getTime
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import android.R.id.edit
-import android.text.SpannableStringBuilder
 import android.widget.EditText
 import android.content.DialogInterface
 import android.support.v4.app.NotificationCompat
@@ -25,9 +14,13 @@ import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.Button
 import android.support.v4.app.NotificationManagerCompat
-import me.mattak.moment.Moment
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
+import java.util.*
+import io.realm.Realm
+import me.mattak.moment.Moment
+import com.uucyan.memopush.model.Memo
+import com.uucyan.memopush.service.RealmService
 
 
 /**
@@ -35,56 +28,28 @@ import android.app.TaskStackBuilder
  */
 class MemoActivity : AppCompatActivity() {
 
-//    val notificationTimeView: TextView by bindView<TextView>(R.id.notification_time_view)
-//    private val notificationTimeView: TextView? = null
-
-//    companion object {
-//
-//        private const val MEMO_EXTRA: String = "memo"
-//
-//        fun intent(context: Context, memo: Memo): Intent =
-//                Intent(context, MemoActivity::class.java).putExtra(MEMO_EXTRA, memo)
-//    }
-
-    // custom getter
-    // リストからメモの選択またはメモを通知した際に対象メモのIDがセットされる
-    // 新規登録の場合は0がセットされる
+    // MemoActivity実行時に渡ってきたメモIDを返却する
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
 
+    private val titleEditText: EditText
+        get() = findViewById<EditText>(R.id.title_edit)
+
+    private val bodyEditText: EditText
+        get() = findViewById<EditText>(R.id.body_edit)
+
+    private val notificationTimeTextView: TextView
+        get() = findViewById<TextView>(R.id.notification_time_view)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-        // idが渡ってきた場合0ではないため、編集画面として既存のデータをセットする
-        if (this.memoId != 0) {
-            this.setFieldData()
-        }
+        // 編集画面の場合、登録してあるデータを入力欄にセットする
+        if (!isCreate()) setFieldData()
 
-        val memoView = findViewById<MemoView>(R.id.memo_view) as MemoView
-//        val memo: Memo = intent.getParcelableExtra(MEMO_EXTRA)
-//        memoView.setMemo(memo)
-
-        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) {
-                val datePicker = DatePickerDialogFragment()
-                datePicker.show(supportFragmentManager, "datePicker")
-            } else {
-                val notificationTimeView = findViewById<TextView>(R.id.notification_time_view)
-                notificationTimeView.setText("")
-            }
-        }
-
-//        val button = findViewById<Button>(R.id.notification_button) as Button
-//        button
-
-        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                onNotificationMemo()
-            }
-        })
+        setButton()
+        setCompoundButton()
     }
 
     /**
@@ -95,10 +60,8 @@ class MemoActivity : AppCompatActivity() {
 
         for (i in 0..menu.size() - 1) {
             val item = menu.getItem(i)
-            if (item.itemId == R.id.delete_memo) {
-                // 編集画面の時だけ削除ボタンを表示する
-                item.isVisible = this.memoId != 0
-            }
+            // 編集画面の時だけ削除ボタンを表示する
+            if (item.itemId == R.id.delete_memo) item.isVisible = !isCreate()
         }
 
         return true
@@ -110,11 +73,7 @@ class MemoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.save_memo -> {
-                if (this.memoId == 0) {
-                    this.createMemo()
-                } else {
-                    this.updateMemo()
-                }
+                if (isCreate()) createMemo() else updateMemo()
                 finish()
             }
             R.id.delete_memo -> {
@@ -124,7 +83,7 @@ class MemoActivity : AppCompatActivity() {
                 alertDlg.setPositiveButton(
                         "OK",
                         DialogInterface.OnClickListener { dialog, which ->
-                            this.deleteMemo()
+                            deleteMemo()
                             finish()
                         })
                 alertDlg.setNegativeButton(
@@ -142,69 +101,50 @@ class MemoActivity : AppCompatActivity() {
      * カレンダーで選択した年月日のセット
      */
     fun setDate(year: Int, month: Int, dayOfMonth: Int) {
-        val notificationTimeView = findViewById<TextView>(R.id.notification_time_view)
-        val cal = Calendar.getInstance()
-        cal.set(year, month, dayOfMonth)
-        val sdf = SimpleDateFormat("yyyy/MM/dd")
-        notificationTimeView.setText(sdf.format(cal.getTime()))
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, dayOfMonth)
+        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
     }
 
     /**
      * 既存のメモデータをフィールドにセットする
      */
     private fun setFieldData() {
-        val realm = Realm.getDefaultInstance()
-        val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
-        val title = findViewById<EditText>(R.id.title_edit)
-        val body = findViewById<EditText>(R.id.body_edit)
-        val notificationTime = findViewById<TextView>(R.id.notification_time_view)
-
-        title.setText(memo!!.title)
-        body.setText(memo.body)
-        notificationTime.setText(memo.notificationTime)
+        titleEditText.setText(memo?.title)
+        bodyEditText.setText(memo?.body)
+        notificationTimeTextView.setText(memo?.notificationTime)
     }
 
     /**
      * メモの新規登録
-     * TODO: 色々とイけてないからちゃんと考えたい
      */
     private fun createMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
                 val memo = realm.createObject(Memo::class.java, RealmService.idGeneration())
 
-                // 入力値を取得
-                val title = findViewById<EditText>(R.id.title_edit)
-                val body = findViewById<EditText>(R.id.body_edit)
-                val notificationTime = findViewById<TextView>(R.id.notification_time_view)
-
                 // 登録
-                memo.title = title.getText().toString()
-                memo.body = body.getText().toString()
-                memo.notificationTime = notificationTime.getText().toString()
+                memo.title = titleEditText.getText().toString()
+                memo.body = bodyEditText.getText().toString()
+                memo.notificationTime = notificationTimeTextView.getText().toString()
             }
         }
     }
 
     /**
      * メモの更新
-     * TODO: 色々とイけてないからちゃんと考えたい
      */
     private fun updateMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
-
-                // 入力値を取得
-                val title = findViewById<EditText>(R.id.title_edit)
-                val body = findViewById<EditText>(R.id.body_edit)
-                val notificationTime = findViewById<TextView>(R.id.notification_time_view)
+                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
 
                 // 登録
-                memo?.title = title.getText().toString()
-                memo?.body = body.getText().toString()
-                memo?.notificationTime = notificationTime.getText().toString()
+                memo?.title = titleEditText.getText().toString()
+                memo?.body = bodyEditText.getText().toString()
+                memo?.notificationTime = notificationTimeTextView.getText().toString()
             }
         }
     }
@@ -215,7 +155,7 @@ class MemoActivity : AppCompatActivity() {
     private fun deleteMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", this.memoId).findFirst()
+                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
                 memo?.deleteFromRealm()
             }
         }
@@ -223,47 +163,66 @@ class MemoActivity : AppCompatActivity() {
 
     /**
      * メモの通知
-     * TODO: 通知関連の処理はServiceにする
+     * TODO: どうにかしたい
      */
     private fun onNotificationMemo() {
-        // 入力値を取得
-        val title = findViewById<EditText>(R.id.title_edit)
-        val body = findViewById<EditText>(R.id.body_edit)
-//        val notificationTime = findViewById<TextView>(R.id.notification_time_view)
-
         val builder = NotificationCompat.Builder(applicationContext)
         builder.setSmallIcon(R.drawable.ic_action_add_memo)
-        builder.setContentTitle(title.getText().toString())
-        builder.setContentText(body.getText().toString())
-//        builder.setSubText("SubText")
-//        builder.setContentInfo("Info")
+        builder.setContentTitle(titleEditText.getText().toString())
+        builder.setContentText(bodyEditText.getText().toString())
         builder.setWhen(System.currentTimeMillis())
-
 
         val resultIntent = Intent(this, MemoActivity::class.java)
         // 通知したメモのタップ時にメモの情報を取得するため、IDをセットしておく
-        resultIntent.putExtra("MEMO_ID", this.memoId)
+        resultIntent.putExtra("MEMO_ID", memoId)
 
         // 通議から起動したメモの編集画面から戻るボタンを押した時、
         // AndroidManifestに定義した親クラスに遷移させるための設定処理。
         val stackBuilder = TaskStackBuilder.create(this)
         stackBuilder.addParentStack(MemoActivity::class.java)
         stackBuilder.addNextIntent(resultIntent)
-        val resultPendingIntent = stackBuilder.getPendingIntent(this.memoId, PendingIntent.FLAG_UPDATE_CURRENT)
+        val resultPendingIntent = stackBuilder.getPendingIntent(memoId, PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(resultPendingIntent);
-
-//        builder.addAction(R.drawable.ic_action_add_memo, "アクション1", resultPendingIntent);
-
-//        builder.setTicker("Ticker") // 通知到着時に通知バーに表示(4.4まで)
-        // 5.0からは表示されない
 
         // 最近のAndroidバージョンだと必要なさそう…。
         val bigTextStyle = NotificationCompat.BigTextStyle(builder)
-        bigTextStyle.bigText(body.getText().toString())
-        bigTextStyle.setBigContentTitle(title.getText().toString())
-//        bigTextStyle.setSummaryText("SummaryText")
+        bigTextStyle.bigText(bodyEditText.getText().toString())
 
         val manager = NotificationManagerCompat.from(applicationContext)
-        manager.notify(this.memoId, builder.build())
+        manager.notify(memoId, builder.build())
+    }
+
+    /**
+     * 新規作成かどうか判定
+     */
+    private fun isCreate(): Boolean = memoId == 0
+
+    /**
+     * ボタンの設定
+     */
+    private fun setButton() {
+        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View) {
+                onNotificationMemo()
+            }
+        })
+    }
+
+    /**
+     * スイッチボタンの設定
+     */
+    private fun setCompoundButton() {
+        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
+
+        // 日付が登録されていればチェックをつける
+        if (!notificationTimeTextView.getText().toString().isBlank()) toggle.setChecked(true)
+
+        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                DatePickerDialogFragment().show(supportFragmentManager, "datePicker")
+            } else {
+                notificationTimeTextView.setText("")
+            }
+        }
     }
 }
