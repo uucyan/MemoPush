@@ -41,6 +41,9 @@ class MemoActivity : AppCompatActivity() {
     private val notificationTimeTextView: TextView
         get() = findViewById<TextView>(R.id.notification_time_view)
 
+    private var notificationDateTime: MutableMap<String, Int> =
+            mutableMapOf("year" to 0, "month" to 0, "dayOfMonth" to 0, "hourOfDay" to 0, "minute" to 0)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
@@ -101,9 +104,42 @@ class MemoActivity : AppCompatActivity() {
      * カレンダーで選択した年月日のセット
      */
     fun setDate(year: Int, month: Int, dayOfMonth: Int) {
+//        val calendar = Calendar.getInstance()
+//        calendar.set(year, month, dayOfMonth)
+//        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
+
+        notificationDateTime["year"] = year
+        notificationDateTime["month"] = month
+        notificationDateTime["dayOfMonth"] = dayOfMonth
+    }
+
+    /**
+     * タイムピッカーで選択した時間のセット
+     */
+    fun setTime(hourOfDay: Int, minute: Int) {
+//        val calendar = Calendar.getInstance()
+//        calendar.set(notificationDateTime["year"]!!, notificationDateTime["month"]!!, notificationDateTime["dayOfMonth"]!!, hourOfDay, minute)
+//        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm"))
+
+        notificationDateTime["hourOfDay"] = hourOfDay
+        notificationDateTime["minute"] = minute
+    }
+
+    /**
+     * 選択した日時を画面に表示
+     */
+    fun showDateTime() {
         val calendar = Calendar.getInstance()
-        calendar.set(year, month, dayOfMonth)
-        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
+        calendar.set(notificationDateTime["year"]!!, notificationDateTime["month"]!!, notificationDateTime["dayOfMonth"]!!, notificationDateTime["hourOfDay"]!!, notificationDateTime["minute"]!!)
+        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm"))
+    }
+
+    /**
+     * 時間選択のダイアログを表示
+     * 日付選択ダイアログでOKを押した場合に呼び出される
+     */
+    fun showTimpicker() {
+        TimePickerDialogFragment().show(supportFragmentManager, "timePicker")
     }
 
     /**

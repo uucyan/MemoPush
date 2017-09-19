@@ -23,10 +23,12 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
     }
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
-        //日付が選択されたときの処理
+        // 日付が選択されたときの処理
         val activity = activity
         if (activity is MemoActivity) {
             activity.setDate(year, month, day)
+            // 日時選択のダイアログを表示
+            activity.showTimpicker()
         }
     }
 

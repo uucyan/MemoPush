@@ -108,12 +108,11 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
-            android:layout_marginTop="375dp"
-            android:layout_marginLeft="220dp"
+            android:layout_marginTop="405dp"
             android:text=""
             android:textColor="@android:color/black"
             android:textSize="17sp"
-            tools:text="2017/09/01"/>
+            tools:text="2017/09/01 00:00"/>
 
     </com.uucyan.memopush.view.MemoView>
 

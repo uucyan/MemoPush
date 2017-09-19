@@ -22,7 +22,13 @@ class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetLis
     }
 
     override fun onTimeSet(view: TimePicker, hourOfDay: Int, minute: Int) {
-        //時刻が選択されたときの処理
+        // 時刻が選択されたときの処理
+        val activity = activity
+        if (activity is MemoActivity) {
+            activity.setTime(hourOfDay, minute)
+            // メモの編集画面に選択した日時を表示
+            activity.showDateTime()
+        }
     }
 
 }
