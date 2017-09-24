@@ -41,6 +41,9 @@ class MemoActivity : AppCompatActivity() {
     private val notificationTimeTextView: TextView
         get() = findViewById<TextView>(R.id.notification_time_view)
 
+    private val toggleButton: CompoundButton
+        get() = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
+
     private var notificationDateTime: MutableMap<String, Int> =
             mutableMapOf("year" to 0, "month" to 0, "dayOfMonth" to 0, "hourOfDay" to 0, "minute" to 0)
 
@@ -132,6 +135,14 @@ class MemoActivity : AppCompatActivity() {
         val calendar = Calendar.getInstance()
         calendar.set(notificationDateTime["year"]!!, notificationDateTime["month"]!!, notificationDateTime["dayOfMonth"]!!, notificationDateTime["hourOfDay"]!!, notificationDateTime["minute"]!!)
         notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm"))
+    }
+
+    /**
+     * スイッチのチェックを外して日時をクリアする
+     */
+    fun unsetCheckAndClearDateTime() {
+        toggleButton.setChecked(false)
+        notificationTimeTextView.setText("")
     }
 
     /**
@@ -248,12 +259,10 @@ class MemoActivity : AppCompatActivity() {
      * スイッチボタンの設定
      */
     private fun setCompoundButton() {
-        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
-
         // 日付が登録されていればチェックをつける
-        if (!notificationTimeTextView.getText().toString().isBlank()) toggle.setChecked(true)
+        if (!notificationTimeTextView.getText().toString().isBlank()) toggleButton.setChecked(true)
 
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        toggleButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 DatePickerDialogFragment().show(supportFragmentManager, "datePicker")
             } else {

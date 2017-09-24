@@ -2,11 +2,11 @@ package com.uucyan.memopush
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.DialogInterface
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.DatePicker;
 import java.util.Calendar;
-//import android.app.Activity
 
 /**
  * Created by Uucyan on 2017/08/27.
@@ -32,4 +32,12 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
         }
     }
 
+    override fun onCancel(dialog: DialogInterface?) {
+        super.onCancel(dialog)
+
+        val activity = activity
+        if (activity is MemoActivity) {
+            activity.unsetCheckAndClearDateTime()
+        }
+    }
 }

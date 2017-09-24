@@ -2,6 +2,7 @@ package com.uucyan.memopush
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.TimePicker;
@@ -28,6 +29,15 @@ class TimePickerDialogFragment : DialogFragment(), TimePickerDialog.OnTimeSetLis
             activity.setTime(hourOfDay, minute)
             // メモの編集画面に選択した日時を表示
             activity.showDateTime()
+        }
+    }
+
+    override fun onCancel(dialog: DialogInterface?) {
+        super.onCancel(dialog)
+
+        val activity = activity
+        if (activity is MemoActivity) {
+            activity.unsetCheckAndClearDateTime()
         }
     }
 
