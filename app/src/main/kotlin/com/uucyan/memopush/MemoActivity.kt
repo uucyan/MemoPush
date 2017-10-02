@@ -16,11 +16,15 @@ import android.widget.Button
 import android.support.v4.app.NotificationManagerCompat
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
+import android.content.Context;
 import java.util.*
 import io.realm.Realm
 import me.mattak.moment.Moment
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.service.RealmService
+import android.widget.Toast
+import android.app.AlarmManager
+import java.text.SimpleDateFormat
 
 
 /**
@@ -80,6 +84,7 @@ class MemoActivity : AppCompatActivity() {
         when (item.getItemId()) {
             R.id.save_memo -> {
                 if (isCreate()) createMemo() else updateMemo()
+                if (toggleButton.isChecked) setAlarmNotification()
                 finish()
             }
             R.id.delete_memo -> {
@@ -107,10 +112,6 @@ class MemoActivity : AppCompatActivity() {
      * カレンダーで選択した年月日のセット
      */
     fun setDate(year: Int, month: Int, dayOfMonth: Int) {
-//        val calendar = Calendar.getInstance()
-//        calendar.set(year, month, dayOfMonth)
-//        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
-
         notificationDateTime["year"] = year
         notificationDateTime["month"] = month
         notificationDateTime["dayOfMonth"] = dayOfMonth
@@ -120,10 +121,6 @@ class MemoActivity : AppCompatActivity() {
      * タイムピッカーで選択した時間のセット
      */
     fun setTime(hourOfDay: Int, minute: Int) {
-//        val calendar = Calendar.getInstance()
-//        calendar.set(notificationDateTime["year"]!!, notificationDateTime["month"]!!, notificationDateTime["dayOfMonth"]!!, hourOfDay, minute)
-//        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm"))
-
         notificationDateTime["hourOfDay"] = hourOfDay
         notificationDateTime["minute"] = minute
     }
@@ -237,6 +234,28 @@ class MemoActivity : AppCompatActivity() {
 
         val manager = NotificationManagerCompat.from(applicationContext)
         manager.notify(memoId, builder.build())
+    }
+
+    /**
+     * メモの通知アラームを設定
+     */
+    private fun setAlarmNotification() {
+        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+        intent.putExtra("memoId", memoId)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, memoId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        // 通知のアラーム日時を取得して設定
+        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
+        val formatDate = sdf.parse(notificationTimeTextView.getText().toString())
+        val calendar = Calendar.getInstance()
+        calendar.setTime(formatDate)
+
+        // アラームをセットする
+        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
+
+        // トーストで設定されたことをを表示
+        Toast.makeText(applicationContext, "${notificationTimeTextView.getText().toString()} に通知されます", Toast.LENGTH_SHORT).show()
     }
 
     /**

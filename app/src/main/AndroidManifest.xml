@@ -27,5 +27,10 @@
                 android:value=".MainActivity"/>
         </activity>
 
+        <receiver
+            android:name=".AlarmBroadcastReceiver"
+            android:process=":remote" >
+        </receiver>
+
     </application>
 </manifest>
