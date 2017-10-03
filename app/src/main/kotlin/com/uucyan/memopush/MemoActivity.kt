@@ -16,11 +16,15 @@ import android.widget.Button
 import android.support.v4.app.NotificationManagerCompat
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
+import android.content.Context;
 import java.util.*
 import io.realm.Realm
 import me.mattak.moment.Moment
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.service.RealmService
+import android.widget.Toast
+import android.app.AlarmManager
+import java.text.SimpleDateFormat
 
 
 /**
@@ -40,6 +44,12 @@ class MemoActivity : AppCompatActivity() {
 
     private val notificationTimeTextView: TextView
         get() = findViewById<TextView>(R.id.notification_time_view)
+
+    private val toggleButton: CompoundButton
+        get() = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
+
+    private var notificationDateTime: MutableMap<String, Int> =
+            mutableMapOf("year" to 0, "month" to 0, "dayOfMonth" to 0, "hourOfDay" to 0, "minute" to 0)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +84,7 @@ class MemoActivity : AppCompatActivity() {
         when (item.getItemId()) {
             R.id.save_memo -> {
                 if (isCreate()) createMemo() else updateMemo()
+                if (toggleButton.isChecked) setAlarmNotification()
                 finish()
             }
             R.id.delete_memo -> {
@@ -101,9 +112,42 @@ class MemoActivity : AppCompatActivity() {
      * カレンダーで選択した年月日のセット
      */
     fun setDate(year: Int, month: Int, dayOfMonth: Int) {
+        notificationDateTime["year"] = year
+        notificationDateTime["month"] = month
+        notificationDateTime["dayOfMonth"] = dayOfMonth
+    }
+
+    /**
+     * タイムピッカーで選択した時間のセット
+     */
+    fun setTime(hourOfDay: Int, minute: Int) {
+        notificationDateTime["hourOfDay"] = hourOfDay
+        notificationDateTime["minute"] = minute
+    }
+
+    /**
+     * 選択した日時を画面に表示
+     */
+    fun showDateTime() {
         val calendar = Calendar.getInstance()
-        calendar.set(year, month, dayOfMonth)
-        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm:ss"))
+        calendar.set(notificationDateTime["year"]!!, notificationDateTime["month"]!!, notificationDateTime["dayOfMonth"]!!, notificationDateTime["hourOfDay"]!!, notificationDateTime["minute"]!!)
+        notificationTimeTextView.setText(Moment(calendar.time).format("yyyy/MM/dd HH:mm"))
+    }
+
+    /**
+     * スイッチのチェックを外して日時をクリアする
+     */
+    fun unsetCheckAndClearDateTime() {
+        toggleButton.setChecked(false)
+        notificationTimeTextView.setText("")
+    }
+
+    /**
+     * 時間選択のダイアログを表示
+     * 日付選択ダイアログでOKを押した場合に呼び出される
+     */
+    fun showTimpicker() {
+        TimePickerDialogFragment().show(supportFragmentManager, "timePicker")
     }
 
     /**
@@ -193,6 +237,28 @@ class MemoActivity : AppCompatActivity() {
     }
 
     /**
+     * メモの通知アラームを設定
+     */
+    private fun setAlarmNotification() {
+        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+        intent.putExtra("memoId", memoId)
+        val pendingIntent = PendingIntent.getBroadcast(applicationContext, memoId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+
+        // 通知のアラーム日時を取得して設定
+        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
+        val formatDate = sdf.parse(notificationTimeTextView.getText().toString())
+        val calendar = Calendar.getInstance()
+        calendar.setTime(formatDate)
+
+        // アラームをセットする
+        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
+
+        // トーストで設定されたことをを表示
+        Toast.makeText(applicationContext, "${notificationTimeTextView.getText().toString()} に通知されます", Toast.LENGTH_SHORT).show()
+    }
+
+    /**
      * 新規作成かどうか判定
      */
     private fun isCreate(): Boolean = memoId == 0
@@ -212,12 +278,10 @@ class MemoActivity : AppCompatActivity() {
      * スイッチボタンの設定
      */
     private fun setCompoundButton() {
-        val toggle = findViewById<CompoundButton>(R.id.notification_time_switch) as CompoundButton
-
         // 日付が登録されていればチェックをつける
-        if (!notificationTimeTextView.getText().toString().isBlank()) toggle.setChecked(true)
+        if (!notificationTimeTextView.getText().toString().isBlank()) toggleButton.setChecked(true)
 
-        toggle.setOnCheckedChangeListener { buttonView, isChecked ->
+        toggleButton.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 DatePickerDialogFragment().show(supportFragmentManager, "datePicker")
             } else {
