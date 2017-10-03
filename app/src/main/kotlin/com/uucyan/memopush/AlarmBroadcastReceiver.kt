@@ -25,34 +25,6 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
 
     // データを受信した
     override fun onReceive(context: Context, intent: Intent) {
-
-//        this.context = context
-//
-//        Log.d("AlarmBroadcastReceiver", "onReceive() pid=" + android.os.Process.myPid())
-//
-//        val memoId = intent.getIntExtra("memoId", 0)
-//
-//        val intent2 = Intent(context, MemoActivity::class.java)
-//        val pendingIntent = PendingIntent.getActivity(context, memoId, intent2, PendingIntent.FLAG_UPDATE_CURRENT)
-//
-//        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-//        val notification = NotificationCompat.Builder(context)
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setTicker("時間です")
-//                .setWhen(System.currentTimeMillis())
-//                .setContentTitle("TestAlarm " + memoId)
-//                .setContentText("時間になりました")
-//                // 音、バイブレート、LEDで通知
-//                .setDefaults(Notification.DEFAULT_ALL)
-//                // 通知をタップした時にMainActivityを立ち上げる
-//                .setContentIntent(pendingIntent)
-//                .build()
-//
-//        // 古い通知を削除
-//        notificationManager.cancelAll()
-//        // 通知
-//        notificationManager.notify(R.string.app_name, notification)
-
         this.context = context
 
         val memoId = intent.getIntExtra("memoId", 0)
