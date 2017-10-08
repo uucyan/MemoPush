@@ -16,16 +16,13 @@ import android.widget.Button
 import android.support.v4.app.NotificationManagerCompat
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
-import android.content.Context;
 import java.util.*
 import io.realm.Realm
 import me.mattak.moment.Moment
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.service.RealmService
 import android.widget.Toast
-import android.app.AlarmManager
 import com.uucyan.memopush.service.NotificationService
-import java.text.SimpleDateFormat
 
 
 /**
@@ -58,8 +55,6 @@ class MemoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
-
-//        memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
         // メモが存在すればフィールドに情報をセット
         if (existsMemo()) {
@@ -168,8 +163,6 @@ class MemoActivity : AppCompatActivity() {
      * 既存のメモデータをフィールドにセットする
      */
     private fun setFieldData() {
-//        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
-
         titleEditText.setText(memo?.title)
         bodyEditText.setText(memo?.body)
         notificationTimeTextView.setText(memo?.notificationTime)
@@ -182,13 +175,10 @@ class MemoActivity : AppCompatActivity() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
                 val newMemo = realm.createObject(Memo::class.java, RealmService.idGeneration())
-
-                // 登録
                 newMemo.title = titleEditText.getText().toString()
                 newMemo.body = bodyEditText.getText().toString()
                 newMemo.notificationTime = notificationTimeTextView.getText().toString()
 
-//                memo = newMemo
                 intent.putExtra("MEMO_ID", newMemo.id)
             }
         }
@@ -200,9 +190,6 @@ class MemoActivity : AppCompatActivity() {
     private fun updateMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-//                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
-
-                // 登録
                 memo?.title = titleEditText.getText().toString()
                 memo?.body = bodyEditText.getText().toString()
                 memo?.notificationTime = notificationTimeTextView.getText().toString()
@@ -216,7 +203,6 @@ class MemoActivity : AppCompatActivity() {
     private fun deleteMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-//                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
                 memo?.deleteFromRealm()
             }
         }
@@ -257,7 +243,6 @@ class MemoActivity : AppCompatActivity() {
      * メモの通知アラームを設定
      */
     private fun setAlarmNotification() {
-//        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
         val sendMemo = memo
         val toastText = if (sendMemo is Memo) {
             NotificationService.setAlarm(applicationContext, sendMemo)
@@ -268,22 +253,6 @@ class MemoActivity : AppCompatActivity() {
 
         // トーストで設定されたことをを表示
         Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
-
-//        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-//        intent.putExtra("memoId", memoId)
-//        val pendingIntent = PendingIntent.getBroadcast(applicationContext, memoId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-//
-//        // 通知のアラーム日時を取得して設定
-//        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
-//        val formatDate = sdf.parse(notificationTimeTextView.getText().toString())
-//        val calendar = Calendar.getInstance()
-//        calendar.setTime(formatDate)
-//
-//        // アラームをセットする
-//        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
-
-
     }
 
     /**

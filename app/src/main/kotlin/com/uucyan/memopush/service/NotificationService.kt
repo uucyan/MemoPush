@@ -7,7 +7,6 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
-import android.widget.Toast
 import com.uucyan.memopush.AlarmBroadcastReceiver
 import com.uucyan.memopush.MemoActivity
 import com.uucyan.memopush.R
@@ -64,8 +63,6 @@ class NotificationService {
             // アラームをセットする
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
-
-//            Toast.makeText(context, "${memo.notificationTime} に通知されます", Toast.LENGTH_SHORT).show()
         }
 
     }
