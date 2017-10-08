@@ -24,6 +24,7 @@ import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.service.RealmService
 import android.widget.Toast
 import android.app.AlarmManager
+import com.uucyan.memopush.service.NotificationService
 import java.text.SimpleDateFormat
 
 
@@ -35,6 +36,9 @@ class MemoActivity : AppCompatActivity() {
     // MemoActivity実行時に渡ってきたメモIDを返却する
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
+
+    private val memo: Memo?
+        get() = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
     private val titleEditText: EditText
         get() = findViewById<EditText>(R.id.title_edit)
@@ -55,8 +59,18 @@ class MemoActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_memo)
 
-        // 編集画面の場合、登録してあるデータを入力欄にセットする
-        if (!isCreate()) setFieldData()
+//        memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
+
+        // メモが存在すればフィールドに情報をセット
+        if (existsMemo()) {
+            setFieldData()
+        } else {
+            // 通知バーから起動した時にメモが存在しなければメモリスト画面を起動する
+            if (!isCreateMemo()) {
+                Toast.makeText(applicationContext, "既に削除済みのメモです。", Toast.LENGTH_SHORT).show()
+                finish()
+            }
+        }
 
         setButton()
         setCompoundButton()
@@ -71,7 +85,7 @@ class MemoActivity : AppCompatActivity() {
         for (i in 0..menu.size() - 1) {
             val item = menu.getItem(i)
             // 編集画面の時だけ削除ボタンを表示する
-            if (item.itemId == R.id.delete_memo) item.isVisible = !isCreate()
+            if (item.itemId == R.id.delete_memo) item.isVisible = existsMemo()
         }
 
         return true
@@ -83,7 +97,7 @@ class MemoActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.save_memo -> {
-                if (isCreate()) createMemo() else updateMemo()
+                if (existsMemo()) updateMemo() else createMemo()
                 if (toggleButton.isChecked) setAlarmNotification()
                 finish()
             }
@@ -154,7 +168,7 @@ class MemoActivity : AppCompatActivity() {
      * 既存のメモデータをフィールドにセットする
      */
     private fun setFieldData() {
-        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
+//        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
         titleEditText.setText(memo?.title)
         bodyEditText.setText(memo?.body)
@@ -167,12 +181,15 @@ class MemoActivity : AppCompatActivity() {
     private fun createMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.createObject(Memo::class.java, RealmService.idGeneration())
+                val newMemo = realm.createObject(Memo::class.java, RealmService.idGeneration())
 
                 // 登録
-                memo.title = titleEditText.getText().toString()
-                memo.body = bodyEditText.getText().toString()
-                memo.notificationTime = notificationTimeTextView.getText().toString()
+                newMemo.title = titleEditText.getText().toString()
+                newMemo.body = bodyEditText.getText().toString()
+                newMemo.notificationTime = notificationTimeTextView.getText().toString()
+
+//                memo = newMemo
+                intent.putExtra("MEMO_ID", newMemo.id)
             }
         }
     }
@@ -183,7 +200,7 @@ class MemoActivity : AppCompatActivity() {
     private fun updateMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
+//                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
 
                 // 登録
                 memo?.title = titleEditText.getText().toString()
@@ -199,7 +216,7 @@ class MemoActivity : AppCompatActivity() {
     private fun deleteMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
+//                val memo = realm.where(Memo::class.java).equalTo("id", memoId).findFirst()
                 memo?.deleteFromRealm()
             }
         }
@@ -207,7 +224,7 @@ class MemoActivity : AppCompatActivity() {
 
     /**
      * メモの通知
-     * TODO: どうにかしたい
+     * TODO: メモリストから通知するようにするからここの処理は削除する
      */
     private fun onNotificationMemo() {
         val builder = NotificationCompat.Builder(applicationContext)
@@ -240,28 +257,44 @@ class MemoActivity : AppCompatActivity() {
      * メモの通知アラームを設定
      */
     private fun setAlarmNotification() {
-        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
-        intent.putExtra("memoId", memoId)
-        val pendingIntent = PendingIntent.getBroadcast(applicationContext, memoId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-
-        // 通知のアラーム日時を取得して設定
-        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
-        val formatDate = sdf.parse(notificationTimeTextView.getText().toString())
-        val calendar = Calendar.getInstance()
-        calendar.setTime(formatDate)
-
-        // アラームをセットする
-        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
+//        val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
+        val sendMemo = memo
+        val toastText = if (sendMemo is Memo) {
+            NotificationService.setAlarm(applicationContext, sendMemo)
+            "${sendMemo.notificationTime} に通知されます"
+        } else {
+            "通知対象のメモが存在しません。"
+        }
 
         // トーストで設定されたことをを表示
-        Toast.makeText(applicationContext, "${notificationTimeTextView.getText().toString()} に通知されます", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, toastText, Toast.LENGTH_SHORT).show()
+
+//        val intent = Intent(applicationContext, AlarmBroadcastReceiver::class.java)
+//        intent.putExtra("memoId", memoId)
+//        val pendingIntent = PendingIntent.getBroadcast(applicationContext, memoId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+//
+//        // 通知のアラーム日時を取得して設定
+//        val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
+//        val formatDate = sdf.parse(notificationTimeTextView.getText().toString())
+//        val calendar = Calendar.getInstance()
+//        calendar.setTime(formatDate)
+//
+//        // アラームをセットする
+//        val alarmManager = this.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
+
+
     }
 
     /**
-     * 新規作成かどうか判定
+     * 編集対象のメモが存在するか
      */
-    private fun isCreate(): Boolean = memoId == 0
+    private fun existsMemo(): Boolean = memo is Memo
+
+    /**
+     * 編集対象のメモが存在するか
+     */
+    private fun isCreateMemo(): Boolean = memoId == 0
 
     /**
      * ボタンの設定

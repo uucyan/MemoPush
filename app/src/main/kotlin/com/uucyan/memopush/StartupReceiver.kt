@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.widget.Toast
 import com.uucyan.memopush.model.Memo
+import com.uucyan.memopush.service.NotificationService
 import io.realm.Realm
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,23 +37,25 @@ class StartupReceiver : BroadcastReceiver() {
         val memos =  Realm.getDefaultInstance().where(Memo::class.java).findAll()
 
         for (memo in memos) {
-            if (memo.notificationTime == "") continue
+            if (memo.notificationTime.isBlank()) continue
 
-            val intent = Intent(context, AlarmBroadcastReceiver::class.java)
-            intent.putExtra("memoId", memo.id)
-            val pendingIntent = PendingIntent.getBroadcast(context, memo.id, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+            NotificationService.setAlarm(context, memo)
 
-            // 通知のアラーム日時を取得して設定
-            val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
-            val formatDate = sdf.parse(memo.notificationTime)
-            val calendar = Calendar.getInstance()
-            calendar.setTime(formatDate)
+//            val intent = Intent(context, AlarmBroadcastReceiver::class.java)
+//            intent.putExtra("memoId", memo.id)
+//            val pendingIntent = PendingIntent.getBroadcast(context, memo.id, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+//
+//            // 通知のアラーム日時を取得して設定
+//            val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm")
+//            val formatDate = sdf.parse(memo.notificationTime)
+//            val calendar = Calendar.getInstance()
+//            calendar.setTime(formatDate)
+//
+//            // アラームをセットする
+//            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+//            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
 
-            // アラームをセットする
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent)
-
-//            Toast.makeText(context, "めもぷっしゅによる日付通知が再設定されました。", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "再起動されたため、めもぷっしゅによる日付通知が再設定しました。", Toast.LENGTH_SHORT).show()
         }
     }
 }
