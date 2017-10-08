@@ -26,7 +26,7 @@ class AlarmBroadcastReceiver : BroadcastReceiver() {
         val memo = Realm.getDefaultInstance().where(Memo::class.java).equalTo("id", memoId).findFirst()
 
         if (memo is Memo) {
-            NotificationService.sendNotification(context, memo)
+            NotificationService.sendMemo(context, memo)
         } else {
             Toast.makeText(context, "通知対象のメモが存在しません。", Toast.LENGTH_SHORT).show()
         }

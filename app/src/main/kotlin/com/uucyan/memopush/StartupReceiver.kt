@@ -33,7 +33,7 @@ class StartupReceiver : BroadcastReceiver() {
         for (memo in memos) {
             if (memo.notificationTime.isBlank()) continue
 
-            NotificationService.setAlarm(context, memo)
+            NotificationService.setAlarmMemo(context, memo)
 
             Toast.makeText(context, "再起動されたため、めもぷっしゅによる日付通知が再設定しました。", Toast.LENGTH_SHORT).show()
         }

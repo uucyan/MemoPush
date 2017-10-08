@@ -20,7 +20,10 @@ import java.util.*
 class NotificationService {
     companion object {
 
-        fun sendNotification(context: Context, memo: Memo) {
+        /**
+         * メモの通知
+         */
+        fun sendMemo(context: Context, memo: Memo) {
             // 通知したメモのタップ時にメモの情報を取得するため、IDをセットしておく
             val resultIntent = Intent(context, MemoActivity::class.java)
             resultIntent.putExtra("MEMO_ID", memo.id)
@@ -49,7 +52,10 @@ class NotificationService {
             manager.notify(memo.id, builder.build())
         }
 
-        fun setAlarm(context: Context, memo: Memo) {
+        /**
+         * メモのアラーム通知設定
+         */
+        fun setAlarmMemo(context: Context, memo: Memo) {
             val intent = Intent(context, AlarmBroadcastReceiver::class.java)
             intent.putExtra("memoId", memo.id)
             val pendingIntent = PendingIntent.getBroadcast(context, memo.id, intent, PendingIntent.FLAG_CANCEL_CURRENT)

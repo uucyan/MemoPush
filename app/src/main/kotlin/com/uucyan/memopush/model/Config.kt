@@ -1,8 +1,15 @@
 package com.uucyan.memopush.model
 
+import io.realm.RealmObject
+import io.realm.annotations.RealmClass
+import io.realm.annotations.PrimaryKey
+
 /**
- * Created by Uucyan on 2017/08/08.
- * 設定項目 データクラス
+ * Created by Uucyan on 2017/08/07.
+ * 設定 データクラス
  */
-data class Config(val id: String,
-                  val backgroundExecution: Boolean)
+@RealmClass
+public data class Config(
+        @PrimaryKey
+        public var id: Int
+) : RealmObject() {}

@@ -174,7 +174,8 @@ class MemoActivity : AppCompatActivity() {
     private fun createMemo() {
         Realm.getDefaultInstance().use { realm ->
             realm.executeTransaction {
-                val newMemo = realm.createObject(Memo::class.java, RealmService.idGeneration())
+                val newMemo = realm.createObject(Memo::class.java, RealmService.generateId())
+
                 newMemo.title = titleEditText.getText().toString()
                 newMemo.body = bodyEditText.getText().toString()
                 newMemo.notificationTime = notificationTimeTextView.getText().toString()
@@ -245,7 +246,7 @@ class MemoActivity : AppCompatActivity() {
     private fun setAlarmNotification() {
         val sendMemo = memo
         val toastText = if (sendMemo is Memo) {
-            NotificationService.setAlarm(applicationContext, sendMemo)
+            NotificationService.setAlarmMemo(applicationContext, sendMemo)
             "${sendMemo.notificationTime} に通知されます"
         } else {
             "通知対象のメモが存在しません。"
