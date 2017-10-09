@@ -12,7 +12,7 @@ import io.realm.Realm
 /**
  * Created by Uucyan on 2017/09/24.
  */
-class AlarmBroadcastReceiver : BroadcastReceiver() {
+class AlarmReceiver : BroadcastReceiver() {
 
     var context: Context? = null
 

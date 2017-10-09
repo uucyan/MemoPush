@@ -35,7 +35,7 @@ class StartupReceiver : BroadcastReceiver() {
 
             NotificationService.setAlarmMemo(context, memo)
 
-            Toast.makeText(context, "再起動されたため、めもぷっしゅによる日付通知が再設定しました。", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "再起動されたため、めもぷっしゅによる日付通知を再設定しました。", Toast.LENGTH_SHORT).show()
         }
     }
 }

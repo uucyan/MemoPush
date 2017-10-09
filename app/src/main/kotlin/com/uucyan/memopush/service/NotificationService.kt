@@ -7,7 +7,7 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationManagerCompat
-import com.uucyan.memopush.AlarmBroadcastReceiver
+import com.uucyan.memopush.AlarmReceiver
 import com.uucyan.memopush.MemoActivity
 import com.uucyan.memopush.R
 import com.uucyan.memopush.model.Memo
@@ -56,7 +56,7 @@ class NotificationService {
          * メモのアラーム通知設定
          */
         fun setAlarmMemo(context: Context, memo: Memo) {
-            val intent = Intent(context, AlarmBroadcastReceiver::class.java)
+            val intent = Intent(context, AlarmReceiver::class.java)
             intent.putExtra("memoId", memo.id)
             val pendingIntent = PendingIntent.getBroadcast(context, memo.id, intent, PendingIntent.FLAG_CANCEL_CURRENT)
 
