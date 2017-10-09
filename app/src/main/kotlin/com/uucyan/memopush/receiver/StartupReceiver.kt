@@ -1,4 +1,4 @@
-package com.uucyan.memopush
+package com.uucyan.memopush.receiver
 
 import android.content.Intent
 import android.content.BroadcastReceiver
