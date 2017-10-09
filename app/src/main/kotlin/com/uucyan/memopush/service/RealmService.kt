@@ -8,14 +8,16 @@ import io.realm.Realm
  */
 class RealmService {
     companion object {
+        val firstid: Int = 1
+
         /**
          * idの生成
-         * whereで取得できなければ1を返却
+         * whereで取得できなければデータが存在しないため1を返却。
+         * TODO: 現状Memoクラスにしか対応できていない。動的にやるの辛みだった。
          */
-        fun idGeneration(): Number {
-            var id: Number? = Realm.getDefaultInstance().where(Memo::class.java).max("id")
-            if (id != null) id = id.toInt() + 1
-            return id ?: 1
+        fun generateId(): Int {
+            val id: Number? = Realm.getDefaultInstance().where(Memo::class.java).max("id")
+            return if (id == null) firstid else id.toInt().plus(1)
         }
     }
 }

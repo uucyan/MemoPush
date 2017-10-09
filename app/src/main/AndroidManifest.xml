@@ -30,11 +30,11 @@
         </activity>
 
         <receiver
-            android:name=".AlarmBroadcastReceiver"
+            android:name=".receiver.AlarmReceiver"
             android:process=":remote" >
         </receiver>
 
-        <receiver android:name=".StartupReceiver" >
+        <receiver android:name=".receiver.StartupReceiver" >
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <category android:name="android.intent.category.DEFAULT" />
