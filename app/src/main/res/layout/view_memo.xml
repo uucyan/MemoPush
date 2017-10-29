@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
     android:padding="10dp">
 
     <TextView
         android:id="@+id/title_text_view"
-        android:layout_width="wrap_content"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         tools:text="メモのタイトル" />
@@ -27,5 +28,13 @@
         android:textColor="@android:color/black"
         android:textSize="14sp"
         tools:text="メモの本文" />
+
+    <ImageButton
+        android:id="@+id/list_notification_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:background="@null"
+        android:src="@drawable/ic_action_notification"/>
 
 </RelativeLayout>
