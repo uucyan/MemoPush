@@ -6,52 +6,48 @@
     android:layout_height="match_parent"
     android:layout_margin="10dp">
 
-    <com.uucyan.memopush.view.MemoView
-        android:id="@+id/memo_view"
+    <TextView
+        android:id="@+id/title_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="タイトル"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
+
+    <EditText
+        android:id="@+id/title_edit"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/frame_style"
+        android:ems="10"
+        android:inputType="textPersonName" />
 
-        <TextView
-            android:id="@+id/title_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="タイトル"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
+    <TextView
+        android:id="@+id/body_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:layout_marginTop="20dp"
+        android:text="通知バーに表示するメモ"
+        android:textColor="@android:color/black"
+        android:textSize="17sp" />
 
-        <EditText
-            android:id="@+id/title_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:background="@drawable/frame_style"
-            android:ems="10"
-            android:inputType="textPersonName" />
-
-        <TextView
-            android:id="@+id/body_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginTop="70dp"
-            android:text="通知バーに表示するメモ"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-
-        <EditText
-            android:id="@+id/body_edit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="95dp"
-            android:background="@drawable/frame_style"
-            android:ems="10"
-            android:lines="10"
-            android:inputType="textMultiLine" />
+    <EditText
+        android:id="@+id/body_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/frame_style"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        android:gravity="top|left"
+        android:lines="10" />
 
         <!--<TextView-->
             <!--android:id="@+id/notification_text_view"-->
@@ -74,46 +70,53 @@
             <!--android:textSize="17sp"-->
             <!--android:text="" />-->
 
-        <Button
-            android:id="@+id/notification_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="325dp"
-            android:text="通知バーに表示" />
+        <!--<Button-->
+            <!--android:id="@+id/notification_button"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_marginTop="20dp"-->
+            <!--android:text="通知バーに表示" />-->
 
-        <TextView
-            android:id="@+id/notification_time_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginTop="375dp"
-            android:text="日付の指定で通知"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
 
-        <Switch
-            android:id="@+id/notification_time_switch"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="375dp"
-            android:layout_marginLeft="155dp"
-            android:textSize="17sp"
-            android:text="" />
 
-        <TextView
-            android:id="@+id/notification_time_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:layout_marginTop="405dp"
-            android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="17sp"
-            tools:text="2017/09/01 00:00"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </com.uucyan.memopush.view.MemoView>
+            <TextView
+                android:id="@+id/notification_time_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="1dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginTop="20dp"
+                android:text="日付指定で通知"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+            <Switch
+                android:id="@+id/notification_time_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="5dp"
+                android:textSize="17sp"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/notification_time_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:textColor="@android:color/black"
+                android:textSize="17sp"
+                tools:text="2017/09/01 00:00"/>
+
+        </LinearLayout>
 
 </LinearLayout>

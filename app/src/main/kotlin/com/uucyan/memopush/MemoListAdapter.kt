@@ -4,9 +4,13 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import com.uucyan.memopush.model.Memo
 import com.uucyan.memopush.view.MemoView
 import java.text.FieldPosition
+import android.widget.ImageButton
+import com.uucyan.memopush.service.NotificationService
+
 
 /**
  * Created by Uucyan on 2017/08/27.
@@ -26,6 +30,12 @@ class MemoListAdapter(private val context: Context) : BaseAdapter() {
                          parent: ViewGroup?): View =
             ((convertView as? MemoView) ?: MemoView(context)).apply {
                 setMemo(memos[position])
+
+                findViewById<ImageButton>(R.id.list_notification_button).setOnClickListener(object : View.OnClickListener {
+                    override fun onClick(v: View) {
+                        NotificationService.sendMemo(context, memos[position])
+                    }
+                })
             }
 
 }
