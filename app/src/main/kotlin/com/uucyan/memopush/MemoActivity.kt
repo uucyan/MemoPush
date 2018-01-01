@@ -30,6 +30,12 @@ import com.uucyan.memopush.service.NotificationService
  */
 class MemoActivity : AppCompatActivity() {
 
+    companion object {
+        // メニューにある戻るボタンのid
+        // この実装方法は絶対におかしい
+        const val BACK_BUTTON_ID = 16908332
+    }
+
     // MemoActivity実行時に渡ってきたメモIDを返却する
     private val memoId: Int
         get() = intent.getIntExtra("MEMO_ID", 0)
@@ -90,6 +96,7 @@ class MemoActivity : AppCompatActivity() {
      * アクションバーのボタンを押下した時の処理
      */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val itemId = item.getItemId()
         when (item.getItemId()) {
             R.id.save_memo -> {
                 if (existsMemo()) updateMemo() else createMemo()
@@ -101,16 +108,19 @@ class MemoActivity : AppCompatActivity() {
                 alertDlg.setTitle("メモの削除")
                 alertDlg.setMessage("本当に削除しますか？")
                 alertDlg.setPositiveButton(
-                        "OK",
+                        "はい",
                         DialogInterface.OnClickListener { dialog, which ->
                             deleteMemo()
                             finish()
                         })
                 alertDlg.setNegativeButton(
-                        "Cancel",
+                        "いいえ",
                         DialogInterface.OnClickListener { dialog, which ->
                         })
                 alertDlg.create().show()
+            }
+            BACK_BUTTON_ID -> {
+                finish()
             }
         }
 
