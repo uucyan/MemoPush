@@ -67,7 +67,7 @@ class MemoActivity : AppCompatActivity() {
             }
         }
 
-        setButton()
+//        setButton()
         setCompoundButton()
     }
 
@@ -269,13 +269,13 @@ class MemoActivity : AppCompatActivity() {
     /**
      * ボタンの設定
      */
-    private fun setButton() {
-        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View) {
-                onNotificationMemo()
-            }
-        })
-    }
+//    private fun setButton() {
+//        findViewById<Button>(R.id.notification_button).setOnClickListener(object : View.OnClickListener {
+//            override fun onClick(v: View) {
+//                onNotificationMemo()
+//            }
+//        })
+//    }
 
     /**
      * スイッチボタンの設定
