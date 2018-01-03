@@ -37,7 +37,7 @@ class NotificationService {
 
             // 通知情報をセット
             val builder = android.support.v4.app.NotificationCompat.Builder(context)
-            builder.setSmallIcon(R.mipmap.ic_launcher)
+            builder.setSmallIcon(R.mipmap.ic_notification_icon)
             builder.setContentTitle(memo.title)
             builder.setContentText(memo.body)
             builder.setWhen(System.currentTimeMillis())
