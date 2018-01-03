@@ -92,7 +92,7 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_marginTop="20dp"
-                android:text="日付指定で通知"
+                android:text="日時指定で通知"
                 android:textColor="@android:color/black"
                 android:textSize="17sp" />
             <Switch
